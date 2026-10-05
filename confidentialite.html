@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Confidentialité — Foulées</title>
+<meta name="description" content="Politique de confidentialité de Foulées, application iPhone et iPad d’entraînement à la course à pied, route et trail.">
+<!--
+  Politique de confidentialité de Foulées — rédigée le 5 octobre 2026 (lot 2, PLAN § 10.3).
+  Demandes de Michel du 5 octobre 2026 : « une IA pour analyser les données » (copier-coller
+  vers Claude) et « mettre en ligne comme les autres applications iPhone » (TestFlight externe).
+  Exigences suivies : App Review Guidelines 5.1.1, 5.1.2, 5.1.3 et 1.4.1, documentation
+  HealthKit « Protecting user privacy » (_recherche/07 § 1.6). Chaque phrase a été vérifiée
+  contre le code (SourceSante.swift, Magasin.swift, FouleesStore.swift, DossierAnalyse.swift,
+  ProfilSauvegardeView.swift). À publier sur https://michelhilt-sudo.github.io/foulees/confidentialite.html
+  — page autonome : aucune ressource externe, ni police, ni script.
+  Contrôle de conformité du 5 octobre 2026 (après les écrans « Demander à Claude ») : corrigé
+  « l’app ne se connecte à rien / aucune connexion réseau / mode avion » — faux, la carte d’une
+  sortie (SortieCarte.swift, MapKit) télécharge ses fonds de carte chez Apple, et les liens
+  touchés (Claude, cette page) s’ouvrent ailleurs ; « une seule chose peut en sortir » oubliait
+  la sauvegarde exportée ; contenu du dossier complété (ta question, ravitaillements).
+-->
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --aubergine: #2A1533;
+    --aubergine-claire: #4B2A5C;
+    --violet: #6A3B8A;
+    --volt: #D4F53C;
+    --bg: #F7F5F0;
+    --panel: #FFFFFF;
+    --line: #E4DDE6;
+    --text: #22172A;
+    --text-soft: #64596C;
+    --titre: #2A1533;
+    --accent: #6A3B8A;
+    --repere: #6A3B8A;
+    --shadow: 0 1px 2px rgba(42,21,51,.05), 0 8px 24px rgba(42,21,51,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #140A18; --panel: #1F1226; --line: #362641;
+      --text: #EEE8F2; --text-soft: #B4A7BD; --titre: #F6F0F8;
+      --accent: #D4F53C; --repere: #D4F53C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #140A18; --panel: #1F1226; --line: #362641;
+    --text: #EEE8F2; --text-soft: #B4A7BD; --titre: #F6F0F8;
+    --accent: #D4F53C; --repere: #D4F53C;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.65; font-size: 16px;
+    overflow-wrap: break-word;
+  }
+  .topbar {
+    background: linear-gradient(120deg, var(--aubergine) 0%, var(--aubergine-claire) 100%);
+    border-bottom: 3px solid var(--volt);
+    padding: 14px 16px;
+  }
+  .topbar-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 13px; }
+  .topbar a { text-decoration: none; display: flex; align-items: center; gap: 13px; }
+  .mark { width: 40px; height: 40px; flex: none; display: block; }
+  .topbar-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase; color: var(--volt); }
+  .topbar-title { font-size: 17px; font-weight: 700; color: #FBF8FC; margin-top: 1px; letter-spacing: .2px; }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 44px 16px 56px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2.6px; text-transform: uppercase; color: var(--accent); }
+  h1 { font-size: clamp(27px, 6.4vw, 38px); font-weight: 800; color: var(--titre); line-height: 1.15; margin: 12px 0 10px; letter-spacing: -.4px; }
+  .date { font-size: 13.5px; color: var(--text-soft); }
+
+  .resume {
+    background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--volt);
+    border-radius: 12px; box-shadow: var(--shadow);
+    padding: 20px 22px; margin: 30px 0 8px; font-size: 16.5px;
+  }
+  .resume strong { color: var(--titre); }
+
+  .sommaire {
+    margin: 26px 0 6px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--panel);
+  }
+  .sommaire p { font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-soft); margin-bottom: 8px; }
+  .sommaire ol { margin: 0 0 0 20px; columns: 2; column-gap: 28px; }
+  .sommaire li { margin-bottom: 4px; break-inside: avoid; font-size: 15px; }
+  @media (max-width: 560px) { .sommaire ol { columns: 1; } }
+
+  h2 { font-size: 21px; font-weight: 750; color: var(--titre); margin: 40px 0 12px; line-height: 1.3; scroll-margin-top: 16px; }
+  h2 .num { color: var(--repere); margin-right: 6px; }
+  p { margin-bottom: 14px; }
+  ul { margin: 0 0 14px 20px; }
+  li { margin-bottom: 8px; }
+  li::marker { color: var(--repere); }
+  strong { font-weight: 650; }
+  .soft { color: var(--text-soft); font-size: 15px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  .chemin { font-weight: 600; }
+  .encadre {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; margin: 4px 0 16px;
+  }
+  .encadre p:last-child, .encadre ul:last-child { margin-bottom: 0; }
+  .encadre h3 { font-size: 15px; font-weight: 700; color: var(--titre); margin-bottom: 8px; }
+
+  .footer {
+    max-width: 760px; margin: 0 auto; padding: 20px 16px 48px;
+    font-size: 12.5px; color: var(--text-soft); border-top: 1px solid var(--line);
+  }
+  .footer p { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" aria-label="Foulées — accueil">
+      <svg class="mark" viewBox="0 0 1024 1024" aria-hidden="true">
+        <defs>
+          <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2A1533"/><stop offset="1" stop-color="#4B2A5C"/>
+          </linearGradient>
+          <clipPath id="coins"><rect width="1024" height="1024" rx="228"/></clipPath>
+        </defs>
+        <g clip-path="url(#coins)">
+          <rect width="1024" height="1024" fill="url(#fond)"/>
+          <g fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="18">
+            <path d="M394 1300A906 906 0 0 1 1300 394"/>
+            <path d="M274 1300A1026 1026 0 0 1 1300 274"/>
+            <path d="M154 1300A1146 1146 0 0 1 1300 154"/>
+            <path d="M34 1300A1266 1266 0 0 1 1300 34"/>
+          </g>
+          <path d="M230.5 1111.4A1086 1086 0 0 1 807 332.4" fill="none" stroke="#D4F53C" stroke-width="62" stroke-linecap="round"/>
+          <circle cx="807" cy="332.4" r="80" fill="#2A1533"/>
+          <circle cx="807" cy="332.4" r="64" fill="#D4F53C"/>
+        </g>
+      </svg>
+      <div>
+        <div class="topbar-eyebrow">Application iPhone et iPad</div>
+        <div class="topbar-title">Foulées</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="eyebrow">Politique de confidentialité</div>
+  <h1>Tes données de course restent sur ton iPhone</h1>
+  <div class="date">En vigueur le 5 octobre 2026 · Foulées 1.0 (build 2) et versions suivantes</div>
+
+  <div class="resume">
+    <strong>En bref :</strong> Foulées n’a ni compte, ni serveur, ni publicité, ni outil de mesure
+    d’audience, et n’envoie tes données à personne : tout ce qu’elle lit (tes fichiers de course,
+    Apple Santé) et tout ce qu’elle calcule reste sur ton appareil. Rien n’en sort sans ton geste :
+    seuls le dossier d’analyse que tu décides de copier pour le coller toi-même dans Claude — sans
+    aucune coordonnée GPS — et la sauvegarde que tu exportes peuvent quitter ton appareil.
+  </div>
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <p>Sommaire</p>
+    <ol>
+      <li><a href="#qui">Qui s’occupe de Foulées</a></li>
+      <li><a href="#sante">Ce que Foulées lit dans Apple Santé</a></li>
+      <li><a href="#autres">Les autres données de l’app</a></li>
+      <li><a href="#ou">Où elles sont rangées</a></li>
+      <li><a href="#claude">« Demander à Claude »</a></li>
+      <li><a href="#sauvegarde">Ta sauvegarde et les boutons Copier</a></li>
+      <li><a href="#jamais">Ce que Foulées ne fait jamais</a></li>
+      <li><a href="#testflight">Pendant la bêta TestFlight</a></li>
+      <li><a href="#effacer">Effacer, retirer ton accord</a></li>
+      <li><a href="#droits">Tes droits</a></li>
+      <li><a href="#modifications">Modifications et contact</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="qui"><span class="num">1.</span>Qui s’occupe de Foulées</h2>
+  <p>
+    Foulées est développée par <strong>Michel Hilt</strong>, développeur indépendant — une personne,
+    pas une société —, qui l’a d’abord construite pour son propre entraînement. Il ne reçoit aucune de
+    tes données d’entraînement : l’app ne lui envoie rien, et il n’a aucun moyen d’y accéder.
+    Pour toute question : <a href="mailto:michel.hilt@icloud.com">michel.hilt@icloud.com</a>.
+  </p>
+
+  <h2 id="sante"><span class="num">2.</span>Ce que Foulées lit dans Apple Santé</h2>
+  <p>
+    Seulement si tu actives la source, dans <span class="chemin">Profil ▸ Données et import</span>.
+    C’est à ce moment-là, et jamais au lancement, qu’iOS te demande ton autorisation ; tu peux refuser
+    tout ou partie : Foulées fonctionne alors avec tes fichiers seuls.
+  </p>
+  <p>Foulées lit, <strong>en lecture seule</strong> et uniquement pour la course à pied :</p>
+  <ul>
+    <li><strong>tes séances de course</strong> : début, fin, durée, distance, énergie dépensée,
+      séance en intérieur ou en extérieur, dénivelé et fuseau horaire quand la séance les indique,
+      ainsi que le nom de l’app et de la montre qui l’ont enregistrée ;</li>
+    <li><strong>le tracé GPS</strong> de ces séances, quand il existe ;</li>
+    <li><strong>ta fréquence cardiaque</strong> pendant ces séances ;</li>
+    <li><strong>la distance de marche et de course</strong> et <strong>l’énergie active</strong>
+      enregistrées pendant ces séances, pour compléter une séance qui ne les porte pas ;</li>
+    <li><strong>ta fréquence cardiaque au repos</strong> la plus récente : elle est affichée, et ne
+      rejoint ton profil que si tu touches le bouton prévu pour cela.</li>
+  </ul>
+  <p>
+    <strong>Foulées n’écrit rien dans Apple Santé.</strong> Ces données servent uniquement à calculer,
+    sur ton appareil, ta charge d’entraînement, ta forme, tes allures, tes prédictions de temps et ton
+    plan. Elles ne servent jamais à la publicité, au marketing ni à l’exploitation de données, ne sont
+    jamais vendues, et l’app ne les transmet à personne.
+  </p>
+  <p>
+    Pour retirer l’accès : <span class="chemin">Réglages ▸ Confidentialité et sécurité ▸ Santé ▸ Foulées</span>.
+    Ce qui a déjà été lu reste dans Foulées jusqu’à ce que tu l’effaces (<a href="#effacer">§ 9</a>).
+  </p>
+
+  <h2 id="autres"><span class="num">3.</span>Les autres données de l’app</h2>
+  <p>Tout ce qui suit est enregistré sur ton appareil, et seulement là :</p>
+  <ul>
+    <li><strong>les fichiers de course que tu importes toi-même</strong> : export complet COROS,
+      archive Strava, fichiers FIT, GPX ou TCX reçus par « Ouvrir avec Foulées » ou choisis dans
+      Fichiers. L’app garde le résumé de chaque sortie et sa série seconde par seconde (allure,
+      fréquence cardiaque, altitude, cadence, puissance et tracé GPS, quand le fichier les contient) ;</li>
+    <li><strong>ce que tu saisis</strong> : ton profil (prénom facultatif, sexe, date de naissance,
+      poids, fréquences cardiaques et seuils, préférences d’entraînement), tes épreuves et le GPX de
+      leur parcours, tes notes, ton ressenti, tes chaussures ;</li>
+    <li><strong>ce que l’app en calcule</strong> : charge, forme et fatigue, records, prédictions,
+      plans d’entraînement ;</li>
+    <li><strong>le journal de tes analyses</strong> : les dossiers que tu as copiés pour Claude et les
+      réponses que tu y as recollées ;</li>
+    <li><strong>tes réglages</strong>, par exemple la lecture d’Apple Santé activée ou non.</li>
+  </ul>
+  <p class="soft">
+    Les données d’exemple (« Explorer avec des exemples ») sont entièrement fictives : elles
+    n’apparaissent que si tu les demandes, et « Retirer les exemples » les enlève sans toucher aux
+    tiennes.
+  </p>
+
+  <h2 id="ou"><span class="num">4.</span>Où elles sont rangées</h2>
+  <p>
+    Dans l’espace privé de Foulées sur ton appareil, qu’iOS isole des autres apps. Les fichiers de
+    tes données y portent la protection la plus forte d’iOS : ils sont chiffrés et <strong>illisibles tant que ton
+    iPhone est verrouillé</strong>.
+  </p>
+  <p>
+    Foulées ne possède aucun serveur et <strong>n’envoie tes données nulle part</strong>. Elle ne
+    passe par le réseau que dans deux cas, tous deux confiés à iOS :
+  </p>
+  <ul>
+    <li><strong>la carte d’une sortie</strong> est dessinée par Plans d’Apple (MapKit), qui
+      télécharge chez Apple le fond de carte de la zone affichée, selon la
+      <a href="https://www.apple.com/fr/legal/privacy/">politique de confidentialité d’Apple</a> ;
+      ton tracé, lui, est dessiné par-dessus, sur ton appareil ;</li>
+    <li><strong>les liens que tu touches</strong> — l’ouverture de Claude décrite au
+      <a href="#claude">§ 5</a>, ou cette page — s’ouvrent dans l’app Claude ou dans ton navigateur.</li>
+  </ul>
+  <p>
+    Tout le reste fonctionne en mode avion (seul le fond de carte peut alors manquer). Foulées n’utilise ni
+    iCloud Drive, ni CloudKit, ni aucun stockage en ligne : <strong>l’app ne dépose jamais tes données
+    de santé dans iCloud</strong>.
+  </p>
+  <p class="soft">
+    Seule réserve, commune à toutes les apps : si tu as activé la sauvegarde de ton iPhone (dans iCloud
+    ou sur un ordinateur), iOS y inclut l’espace de Foulées. C’est ton iPhone qui la fait, aux conditions
+    d’Apple ; Foulées n’y a pas accès.
+  </p>
+
+  <h2 id="claude"><span class="num">5.</span>« Demander à Claude » (facultatif)</h2>
+  <p>
+    Pour faire analyser ton entraînement par une intelligence artificielle, Foulées peut rédiger un
+    <strong>dossier texte</strong> que tu colles toi-même dans <strong>Claude</strong>, l’assistant de la
+    société Anthropic. En dehors de la sauvegarde que tu ranges toi-même (<a href="#sauvegarde">§ 6</a>),
+    c’est la seule façon dont des données de Foulées peuvent rejoindre un tiers, et seulement par ton
+    geste.
+  </p>
+  <div class="encadre">
+    <h3>Ce que contient le dossier</h3>
+    <p>
+      Selon la question choisie : ton profil d’entraînement (sexe, âge, poids, fréquences cardiaques et
+      seuils, allures, zones, préférences du plan), ta forme et ta charge, le volume de tes semaines, tes
+      sorties récentes (date, heure de départ, nom, type, distance, durée, allure, fréquence cardiaque,
+      dénivelé, ressenti, chaussures ; découpage au kilomètre pour une sortie analysée), tes records, tes
+      épreuves (nom, date, heure de départ, distance, dénivelé, terrain, objectif, ravitaillements), les
+      prédictions, ton plan, et la question que tu poses. Une partie de ces chiffres vient d’Apple Santé.
+    </p>
+  </div>
+  <div class="encadre">
+    <h3>Ce qu’il ne contient jamais</h3>
+    <ul>
+      <li>aucune coordonnée GPS, aucun tracé, aucun lieu déduit de ta position ;</li>
+      <li>ton prénom, sauf si tu l’ajoutes (interrupteur visible, désactivé par défaut) ;</li>
+      <li>ta date de naissance (seul ton âge y figure).</li>
+    </ul>
+    <p class="soft">
+      Tes notes y figurent par défaut ; un interrupteur visible permet de les retirer. Si tu as donné à
+      une sortie ou à une épreuve un nom qui contient un lieu, ce nom y figure tel quel.
+    </p>
+  </div>
+  <ul>
+    <li><strong>Tu gardes la main.</strong> Tu vois le dossier en entier avant de le copier, et avant
+      la première copie Foulées t’explique ce qu’il contient et te demande ton accord explicite. Le dossier
+      va dans ton presse-papiers, d’où il s’efface au bout d’une heure (la copie universelle d’Apple peut
+      le rendre disponible sur tes autres appareils pendant ce temps), puis Claude s’ouvre (l’app Claude si
+      elle est installée, sinon le site claude.ai) : c’est toi qui le colles et qui l’envoies.</li>
+    <li><strong>Foulées n’envoie rien.</strong> Elle n’a aucune clé d’accès à un service d’intelligence
+      artificielle et ne reçoit rien d’Anthropic.</li>
+    <li><strong>Une fois collé dans Claude</strong>, ton dossier est traité par Anthropic selon ses
+      propres conditions et sa <a href="https://www.anthropic.com/legal/privacy">politique de
+      confidentialité</a>. Si tu ne veux pas que ta conversation serve à améliorer les modèles
+      d’Anthropic, vérifie tes réglages de confidentialité dans Claude, ou ouvre une
+      <a href="https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training">conversation
+      incognito</a>, qui n’y sert jamais.</li>
+    <li><strong>Le retour.</strong> La réponse de Claude ne revient dans Foulées que si tu la recolles
+      toi-même ; elle est alors rangée dans le journal des analyses, sur ton appareil.</li>
+  </ul>
+  <p class="soft">
+    Claude te répond en entraîneur, pas en médecin : ce n’est pas un avis médical. En cas de douleur ou
+    de doute, consulte un médecin.
+  </p>
+
+  <h2 id="sauvegarde"><span class="num">6.</span>Ta sauvegarde et les boutons Copier</h2>
+  <ul>
+    <li><strong>« Exporter une sauvegarde »</strong> (<span class="chemin">Profil ▸ Sauvegarde</span>)
+      crée un fichier qui contient toutes tes données, tracés GPS et journal des analyses compris. Tu
+      choisis où il va — Fichiers, iCloud Drive, AirDrop, courriel… — par la feuille de partage d’iOS ;
+      il relève ensuite du service que tu as choisi. Ce fichier n’est pas chiffré : range-le en lieu sûr.</li>
+    <li>Les écrans techniques (diagnostic d’Apple Santé, auto-tests) ont un bouton <strong>Copier</strong> :
+      le texte va dans ton presse-papiers, et nulle part ailleurs tant que tu ne le colles pas.</li>
+  </ul>
+
+  <h2 id="jamais"><span class="num">7.</span>Ce que Foulées ne fait jamais</h2>
+  <ul>
+    <li>aucune mesure d’audience, aucune statistique d’usage, aucun rapport de plantage envoyé par l’app ;</li>
+    <li>aucune publicité, aucun pistage, aucun kit de développement (SDK) tiers ;</li>
+    <li>aucune vente ni aucun partage de tes données par l’app ; tes données de santé ne servent jamais
+      à la publicité, au marketing ni à l’exploitation de données ;</li>
+    <li>aucun profilage, aucune décision automatisée te concernant ;</li>
+    <li>aucune écriture dans Apple Santé.</li>
+  </ul>
+  <p class="soft">
+    Foulées est un outil d’entraînement, pas un dispositif médical : ses chiffres (charge, forme,
+    prédictions) sont des estimations. En cas de douleur, de malaise ou de doute, consulte un médecin.
+  </p>
+
+  <h2 id="testflight"><span class="num">8.</span>Pendant la bêta TestFlight</h2>
+  <p>
+    Si tu testes Foulées avec TestFlight, c’est Apple qui distribue l’app et qui transmet à Michel,
+    selon les règles de TestFlight : ton nom et ton adresse e-mail si tu as été invité par e-mail
+    (rien de tout cela si tu es venu par un lien public : tu apparais alors anonyme), la date
+    d’installation, le nombre de sessions, les rapports de plantage, et les retours — captures d’écran,
+    commentaires — que tu choisis d’envoyer depuis TestFlight. Michel s’en sert uniquement pour corriger
+    et améliorer Foulées, et ne les partage avec personne. La
+    <a href="https://www.apple.com/fr/legal/privacy/">politique de confidentialité d’Apple</a>
+    s’applique à TestFlight.
+  </p>
+
+  <h2 id="effacer"><span class="num">9.</span>Effacer tes données, retirer ton accord</h2>
+  <ul>
+    <li>Une sortie, une épreuve, une paire de chaussures ou une analyse s’effacent depuis l’app.</li>
+    <li><strong>« Tout effacer »</strong> (<span class="chemin">Profil ▸ Sauvegarde</span>) efface tes
+      sorties et leurs séries, ton profil, tes épreuves, tes plans, tes chaussures et ton journal
+      d’analyses, et désactive la lecture d’Apple Santé. Par précaution, comme avant toute opération qui
+      efface ou remplace des données, l’app fait d’abord une copie de sûreté (sans les séries) qui reste
+      dans son espace privé, sur ton appareil.</li>
+    <li><strong>Désinstaller Foulées</strong> efface tout, copies de sûreté comprises — sauf les
+      sauvegardes que tu as exportées toi-même et ce que tu as collé dans Claude.</li>
+    <li><strong>Retirer l’accès à Apple Santé</strong> : <span class="chemin">Réglages ▸ Confidentialité
+      et sécurité ▸ Santé ▸ Foulées</span>.</li>
+    <li><strong>Retirer ton accord pour Claude</strong> : dans <span class="chemin">Profil ▸ À propos</span> ;
+      Foulées te le redemandera avant toute nouvelle copie. De toute façon, rien ne part sans ton geste,
+      à chaque fois. Ce que tu as déjà collé dans Claude s’efface dans Claude (supprime la conversation) ;
+      les demandes à ce sujet s’adressent à Anthropic.</li>
+  </ul>
+
+  <h2 id="droits"><span class="num">10.</span>Tes droits</h2>
+  <p>
+    Le règlement européen sur la protection des données (RGPD) te donne un droit d’accès, de
+    rectification, d’effacement et de portabilité. Pour ce qui est dans Foulées, tu les exerces
+    toi-même, directement dans l’app : tes données sont chez toi, tu les consultes, les corriges, les
+    exportes (<span class="chemin">Profil ▸ Sauvegarde</span>) et les effaces sans passer par personne ;
+    Michel n’en détient aucune copie. Pour un dossier collé dans Claude, adresse-toi à Anthropic ;
+    pour les informations de TestFlight, à Michel ou à Apple. Tu peux aussi saisir l’autorité de
+    protection des données de ton pays (la CNPD au Luxembourg, la CNIL en France).
+  </p>
+  <p class="soft">
+    Foulées s’adresse aux coureurs adultes. Claude est réservé par Anthropic aux personnes majeures.
+  </p>
+
+  <h2 id="modifications"><span class="num">11.</span>Modifications et contact</h2>
+  <p>
+    Si une version future de Foulées change quoi que ce soit à ce qui précède, cette page sera mise à
+    jour avant la diffusion de cette version, et la date en tête modifiée ; les testeurs en seront
+    prévenus dans les notes de la version.
+  </p>
+  <p>
+    Pour toute question sur cette politique :
+    <a href="mailto:michel.hilt@icloud.com">michel.hilt@icloud.com</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <p>
+    Foulées — application iPhone et iPad · <a href="index.html">Présentation de l’app</a>.
+    Cette page décrit la version 1.0 (build 2) et les suivantes, jusqu’à mention contraire.
+  </p>
+  <p>
+    Foulées n’est affiliée ni à Apple, ni à Anthropic, ni à COROS, ni à Strava ; ces noms appartiennent
+    à leurs propriétaires respectifs.
+  </p>
+</footer>
+
+</body>
+</html>

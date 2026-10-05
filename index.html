@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Foulées</title>
+<meta name="description" content="Foulées, application iPhone et iPad pour exploiter tes statistiques de course et préparer tes prochaines courses, route et trail.">
+<!--
+  Page de présentation de Foulées — rédigée le 5 octobre 2026 (lot 2, PLAN § 10.3), pour la bêta
+  TestFlight avec des testeurs externes (« mettre en ligne comme les autres applications iPhone »,
+  demande de Michel du 5 octobre 2026). Sert d'URL marketing et mène à la politique de
+  confidentialité. À publier sur https://michelhilt-sudo.github.io/foulees/ — page autonome :
+  aucune ressource externe, ni police, ni script.
+-->
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --aubergine: #2A1533;
+    --aubergine-claire: #4B2A5C;
+    --violet: #6A3B8A;
+    --volt: #D4F53C;
+    --bg: #F7F5F0;
+    --panel: #FFFFFF;
+    --line: #E4DDE6;
+    --text: #22172A;
+    --text-soft: #64596C;
+    --titre: #2A1533;
+    --accent: #6A3B8A;
+    --sur-accent: #FFFFFF;
+    --shadow: 0 1px 2px rgba(42,21,51,.05), 0 8px 24px rgba(42,21,51,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #140A18; --panel: #1F1226; --line: #362641;
+      --text: #EEE8F2; --text-soft: #B4A7BD; --titre: #F6F0F8;
+      --accent: #D4F53C; --sur-accent: #2A1533;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #140A18; --panel: #1F1226; --line: #362641;
+    --text: #EEE8F2; --text-soft: #B4A7BD; --titre: #F6F0F8;
+    --accent: #D4F53C; --sur-accent: #2A1533;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; font-size: 16px;
+    overflow-wrap: break-word;
+  }
+  a { color: var(--accent); text-underline-offset: 2px; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--aubergine) 0%, var(--aubergine-claire) 100%);
+    border-bottom: 3px solid var(--volt);
+    color: #FBF8FC;
+    padding: 48px 16px 44px;
+  }
+  .hero-inner { max-width: 820px; margin: 0 auto; display: flex; gap: 26px; align-items: center; }
+  .icone { width: 104px; height: 104px; flex: none; display: block; filter: drop-shadow(0 8px 18px rgba(0,0,0,.35)); }
+  .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2.6px; text-transform: uppercase; color: var(--volt); }
+  .hero h1 { font-size: clamp(38px, 9vw, 54px); font-weight: 800; letter-spacing: -1px; line-height: 1.05; margin: 6px 0 12px; }
+  .hero p { font-size: 17.5px; color: #E4DAEA; max-width: 560px; }
+  @media (max-width: 560px) {
+    .hero-inner { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .icone { width: 84px; height: 84px; }
+  }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 8px 16px 56px; }
+  h2 { font-size: 22px; font-weight: 750; color: var(--titre); margin: 42px 0 14px; line-height: 1.3; }
+  p { margin-bottom: 14px; }
+  ul { margin: 0 0 14px 20px; }
+  li { margin-bottom: 8px; }
+  li::marker { color: var(--accent); }
+  strong { font-weight: 650; }
+  .soft { color: var(--text-soft); font-size: 15px; }
+
+  .onglets { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .carte {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .carte h3 { font-size: 16px; font-weight: 750; color: var(--titre); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .carte h3 .pastille { width: 10px; height: 10px; border-radius: 50%; background: var(--volt); box-shadow: 0 0 0 2px var(--aubergine); flex: none; }
+  .carte p { font-size: 15px; margin: 0; color: var(--text); }
+
+  .bandeau {
+    background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--volt);
+    border-radius: 12px; box-shadow: var(--shadow); padding: 18px 20px; margin: 4px 0 14px;
+  }
+  .bandeau p:last-child { margin-bottom: 0; }
+  .bouton {
+    display: inline-block; margin-top: 4px; padding: 11px 18px; border-radius: 12px;
+    background: var(--accent); color: var(--sur-accent); font-weight: 700; text-decoration: none;
+  }
+  .chemin { font-weight: 600; }
+  ol.etapes { margin: 0 0 14px 22px; }
+  ol.etapes li::marker { color: var(--accent); font-weight: 700; }
+
+  .footer {
+    max-width: 820px; margin: 0 auto; padding: 20px 16px 48px;
+    font-size: 12.5px; color: var(--text-soft); border-top: 1px solid var(--line);
+  }
+  .footer p { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <svg class="icone" viewBox="0 0 1024 1024" role="img" aria-label="Icône de Foulées : un virage de piste et le trait d’un coureur">
+      <defs>
+        <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2A1533"/><stop offset="1" stop-color="#4B2A5C"/>
+        </linearGradient>
+        <clipPath id="coins"><rect width="1024" height="1024" rx="228"/></clipPath>
+      </defs>
+      <g clip-path="url(#coins)">
+        <rect width="1024" height="1024" fill="url(#fond)"/>
+        <g fill="none" stroke="#FFFFFF" stroke-opacity=".2" stroke-width="14">
+          <path d="M394 1300A906 906 0 0 1 1300 394"/>
+          <path d="M274 1300A1026 1026 0 0 1 1300 274"/>
+          <path d="M154 1300A1146 1146 0 0 1 1300 154"/>
+          <path d="M34 1300A1266 1266 0 0 1 1300 34"/>
+        </g>
+        <path d="M230.5 1111.4A1086 1086 0 0 1 807 332.4" fill="none" stroke="#D4F53C" stroke-width="62" stroke-linecap="round"/>
+        <circle cx="807" cy="332.4" r="80" fill="#2A1533"/>
+        <circle cx="807" cy="332.4" r="64" fill="#D4F53C"/>
+      </g>
+      <rect x="1" y="1" width="1022" height="1022" rx="227" fill="none" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+    </svg>
+    <div>
+      <div class="hero-eyebrow">Application iPhone et iPad · en bêta</div>
+      <h1>Foulées</h1>
+      <p>
+        Tes statistiques de course, ta forme, tes prochains chronos et un plan d’entraînement semaine
+        par semaine, recalé sur ce que tu cours vraiment. Route et trail.
+      </p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <h2>Cinq onglets</h2>
+  <div class="onglets">
+    <div class="carte">
+      <h3><span class="pastille" aria-hidden="true"></span>Forme</h3>
+      <p>La forme du jour et ce qu’elle veut dire, la courbe forme / fatigue, le volume des dernières
+        semaines, la répartition des intensités et les alertes quand une séance dépasse ce que tu as
+        l’habitude de courir.</p>
+    </div>
+    <div class="carte">
+      <h3><span class="pastille" aria-hidden="true"></span>Sorties</h3>
+      <p>Chaque sortie en détail : carte, allure ajustée à la pente, fréquence cardiaque, altitude,
+        découpage au kilomètre, temps par zone, meilleurs efforts — et tes records.</p>
+    </div>
+    <div class="carte">
+      <h3><span class="pastille" aria-hidden="true"></span>Objectifs</h3>
+      <p>Tes prochaines courses, sur route ou en trail : prédiction de temps avec sa fourchette, profil
+        du parcours tiré de son GPX, plan de course kilomètre par kilomètre.</p>
+    </div>
+    <div class="carte">
+      <h3><span class="pastille" aria-hidden="true"></span>Plan</h3>
+      <p>Un plan complet jusqu’au jour J — fondations, développement, spécifique, affûtage — que tu
+        recales en un geste sur ce que tu as réellement couru.</p>
+    </div>
+    <div class="carte">
+      <h3><span class="pastille" aria-hidden="true"></span>Profil</h3>
+      <p>Fréquences cardiaques, seuils, VDOT, zones de fréquence cardiaque et d’allure, chacun avec
+        son origine : saisi, mesuré dans tes sorties ou estimé.</p>
+    </div>
+  </div>
+
+  <h2>D’où viennent tes données</h2>
+  <ul>
+    <li><strong>Ta montre</strong> : l’export complet COROS, ou n’importe quel fichier FIT, GPX ou TCX,
+      reçu par « Ouvrir avec Foulées » ou choisi dans Fichiers.</li>
+    <li><strong>Ton archive Strava</strong> : le fichier que Strava te remet sur demande, avec les noms,
+      les étiquettes et les chaussures de tes sorties.</li>
+    <li><strong>Apple Santé</strong>, en lecture seule et seulement si tu l’actives : tes séances de
+      course, ta fréquence cardiaque et tes tracés. Foulées n’écrit rien dans Santé.</li>
+  </ul>
+  <p class="soft">Une même sortie arrivée par plusieurs chemins n’est comptée qu’une fois : les doublons
+    sont fusionnés.</p>
+
+  <h2>Demander à Claude</h2>
+  <p>
+    Pour un regard d’entraîneur sur tes chiffres, Foulées rédige un dossier sur ton entraînement —
+    forme, charge, sorties, objectif, plan, sans aucune position GPS. Tu le relis, tu le copies, tu le
+    colles toi-même dans Claude, puis tu recolles sa réponse dans ton journal d’analyses. C’est
+    facultatif, et l’app n’envoie rien : tout passe par ton geste.
+  </p>
+
+  <h2>Confidentialité</h2>
+  <div class="bandeau">
+    <p><strong>100 % local.</strong> Ni compte, ni serveur, ni publicité, ni mesure d’audience. Tout ce
+      que Foulées lit et calcule reste sur ton iPhone ; rien n’en sort sans ton geste : seuls le dossier
+      que tu décides de copier pour Claude et la sauvegarde que tu exportes peuvent le quitter.</p>
+    <a class="bouton" href="confidentialite.html">Lire la politique de confidentialité</a>
+  </div>
+
+  <h2>Tester la bêta</h2>
+  <p>Foulées est en test avec TestFlight, sur iPhone ou iPad sous iOS 17 ou plus récent.</p>
+  <ol class="etapes">
+    <li>Installe l’app gratuite <strong>TestFlight</strong> depuis l’App Store.</li>
+    <li>Touche, depuis ton iPhone, le lien d’invitation que Michel t’a envoyé.</li>
+    <li>Pas encore de données ? <span class="chemin">Profil ▸ Données et import ▸ Explorer avec des
+      exemples</span> remplit l’app de sorties fictives ; « Retirer les exemples » les enlève.</li>
+  </ol>
+  <p>Tes retours sont précieux : depuis TestFlight (une capture d’écran suffit) ou par e-mail.</p>
+  <p class="soft">
+    Foulées est un outil d’entraînement, pas un dispositif médical : ses chiffres sont des estimations.
+    En cas de douleur ou de doute, consulte un médecin.
+  </p>
+
+  <h2>Contact</h2>
+  <p>Michel Hilt — <a href="mailto:michel.hilt@icloud.com">michel.hilt@icloud.com</a></p>
+</main>
+
+<footer class="footer">
+  <p>Foulées — application iPhone et iPad · <a href="confidentialite.html">Politique de confidentialité</a></p>
+  <p>Foulées n’est affiliée ni à Apple, ni à Anthropic, ni à COROS, ni à Strava ; ces noms appartiennent
+    à leurs propriétaires respectifs.</p>
+</footer>
+
+</body>
+</html>
