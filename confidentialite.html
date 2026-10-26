@@ -152,14 +152,15 @@
 <main class="wrap">
   <div class="eyebrow">Politique de confidentialité</div>
   <h1>Tes données de course restent sur ton iPhone</h1>
-  <div class="date">En vigueur le 5 octobre 2026 · Foulées 1.0 (build 2) et versions suivantes</div>
+  <div class="date">En vigueur le 5 octobre 2026, mise à jour le 26 octobre 2026 (Calendrier) · Foulées 1.0 et versions suivantes</div>
 
   <div class="resume">
     <strong>En bref :</strong> Foulées n’a ni compte, ni serveur, ni publicité, ni outil de mesure
     d’audience, et n’envoie tes données à personne : tout ce qu’elle lit (tes fichiers de course,
     Apple Santé) et tout ce qu’elle calcule reste sur ton appareil. Rien n’en sort sans ton geste :
     seuls le dossier d’analyse que tu décides de copier pour le coller toi-même dans Claude — sans
-    aucune coordonnée GPS — et la sauvegarde que tu exportes peuvent quitter ton appareil.
+    aucune coordonnée GPS —, la sauvegarde que tu exportes et, si tu l’actives, ton plan d’entraînement
+    mis dans ton Calendrier peuvent quitter ton appareil.
   </div>
 
   <nav class="sommaire" aria-label="Sommaire">
@@ -171,6 +172,7 @@
       <li><a href="#ou">Où elles sont rangées</a></li>
       <li><a href="#claude">« Demander à Claude »</a></li>
       <li><a href="#sauvegarde">Ta sauvegarde et les boutons Copier</a></li>
+      <li><a href="#calendrier">Ton plan dans le Calendrier</a></li>
       <li><a href="#jamais">Ce que Foulées ne fait jamais</a></li>
       <li><a href="#testflight">Pendant la bêta TestFlight</a></li>
       <li><a href="#effacer">Effacer, retirer ton accord</a></li>
@@ -259,7 +261,8 @@
   <p>
     Tout le reste fonctionne en mode avion (seul le fond de carte peut alors manquer). Foulées n’utilise ni
     iCloud Drive, ni CloudKit, ni aucun stockage en ligne : <strong>l’app ne dépose jamais tes données
-    de santé dans iCloud</strong>.
+    de santé dans iCloud</strong>. Seule exception, et seulement si tu l’actives : ton plan d’entraînement
+    (pas tes sorties) rejoint le calendrier « Foulées — Plan » de ton compte de calendrier (section 7).
   </p>
   <p class="soft">
     Seule réserve, commune à toutes les apps : si tu as activé la sauvegarde de ton iPhone (dans iCloud
@@ -330,21 +333,40 @@
       le texte va dans ton presse-papiers, et nulle part ailleurs tant que tu ne le colles pas.</li>
   </ul>
 
-  <h2 id="jamais"><span class="num">7.</span>Ce que Foulées ne fait jamais</h2>
+  <h2 id="calendrier"><span class="num">7.</span>Ton plan dans le Calendrier (facultatif)</h2>
+  <p>
+    Si tu touches <strong>Mettre mon plan dans le Calendrier</strong> (onglet <span class="chemin">Plan ▸ Sur ta montre</span>),
+    iOS te demande d’autoriser Foulées à accéder à tes calendriers. Foulées crée alors un calendrier
+    « Foulées — Plan » et y écrit les séances à venir de ton plan : une journée par séance, avec son titre, sa
+    consigne, ses allures et sa zone cardiaque, et un rappel le matin si tu le souhaites. Elle le tient à jour quand
+    ton plan change.
+  </p>
+  <ul>
+    <li>Foulées ne lit, ne modifie ni ne supprime <strong>aucun autre calendrier</strong> ni aucun autre événement,
+      même si iOS lui en donne techniquement l’accès.</li>
+    <li>Le calendrier « Foulées — Plan » est rangé dans un compte de calendrier de ton iPhone (iCloud en priorité,
+      sinon « Sur mon iPhone ») : il est donc synchronisé comme tes autres calendriers, selon les conditions de ce
+      compte, et c’est par lui que ta montre peut afficher la séance du jour.</li>
+    <li>Il ne contient que ton plan d’entraînement : aucune fréquence cardiaque mesurée, aucun tracé, aucune sortie.</li>
+    <li><span class="chemin">Plan ▸ Sur ta montre ▸ Retirer</span> supprime ce calendrier et toutes ses séances.</li>
+  </ul>
+
+  <h2 id="jamais"><span class="num">8.</span>Ce que Foulées ne fait jamais</h2>
   <ul>
     <li>aucune mesure d’audience, aucune statistique d’usage, aucun rapport de plantage envoyé par l’app ;</li>
     <li>aucune publicité, aucun pistage, aucun kit de développement (SDK) tiers ;</li>
     <li>aucune vente ni aucun partage de tes données par l’app ; tes données de santé ne servent jamais
       à la publicité, au marketing ni à l’exploitation de données ;</li>
     <li>aucun profilage, aucune décision automatisée te concernant ;</li>
-    <li>aucune écriture dans Apple Santé.</li>
+    <li>aucune écriture dans Apple Santé ;</li>
+    <li>aucune lecture de tes autres calendriers ni de leurs événements (Foulées ne relit que son calendrier « Foulées — Plan », pour le tenir à jour).</li>
   </ul>
   <p class="soft">
     Foulées est un outil d’entraînement, pas un dispositif médical : ses chiffres (charge, forme,
     prédictions) sont des estimations. En cas de douleur, de malaise ou de doute, consulte un médecin.
   </p>
 
-  <h2 id="testflight"><span class="num">8.</span>Pendant la bêta TestFlight</h2>
+  <h2 id="testflight"><span class="num">9.</span>Pendant la bêta TestFlight</h2>
   <p>
     Si tu testes Foulées avec TestFlight, c’est Apple qui distribue l’app et qui transmet à Michel,
     selon les règles de TestFlight : ton nom et ton adresse e-mail si tu as été invité par e-mail
@@ -356,7 +378,7 @@
     s’applique à TestFlight.
   </p>
 
-  <h2 id="effacer"><span class="num">9.</span>Effacer tes données, retirer ton accord</h2>
+  <h2 id="effacer"><span class="num">10.</span>Effacer tes données, retirer ton accord</h2>
   <ul>
     <li>Une sortie, une épreuve, une paire de chaussures ou une analyse s’effacent depuis l’app.</li>
     <li><strong>« Tout effacer »</strong> (<span class="chemin">Profil ▸ Sauvegarde</span>) efface tes
@@ -366,6 +388,9 @@
       dans son espace privé, sur ton appareil.</li>
     <li><strong>Désinstaller Foulées</strong> efface tout, copies de sûreté comprises — sauf les
       sauvegardes que tu as exportées toi-même et ce que tu as collé dans Claude.</li>
+    <li><strong>Retirer ton plan du Calendrier</strong> : <span class="chemin">Plan ▸ Sur ta montre ▸ Retirer</span>
+      supprime le calendrier « Foulées — Plan ». Pour retirer l’accès lui-même :
+      <span class="chemin">Réglages ▸ Apps ▸ Foulées ▸ Calendriers</span>.</li>
     <li><strong>Retirer l’accès à Apple Santé</strong> : <span class="chemin">Réglages ▸ Confidentialité
       et sécurité ▸ Santé ▸ Foulées</span>.</li>
     <li><strong>Retirer ton accord pour Claude</strong> : dans <span class="chemin">Profil ▸ À propos</span> ;
@@ -374,7 +399,7 @@
       les demandes à ce sujet s’adressent à Anthropic.</li>
   </ul>
 
-  <h2 id="droits"><span class="num">10.</span>Tes droits</h2>
+  <h2 id="droits"><span class="num">11.</span>Tes droits</h2>
   <p>
     Le règlement européen sur la protection des données (RGPD) te donne un droit d’accès, de
     rectification, d’effacement et de portabilité. Pour ce qui est dans Foulées, tu les exerces
@@ -388,7 +413,7 @@
     Foulées s’adresse aux coureurs adultes. Claude est réservé par Anthropic aux personnes majeures.
   </p>
 
-  <h2 id="modifications"><span class="num">11.</span>Modifications et contact</h2>
+  <h2 id="modifications"><span class="num">12.</span>Modifications et contact</h2>
   <p>
     Si une version future de Foulées change quoi que ce soit à ce qui précède, cette page sera mise à
     jour avant la diffusion de cette version, et la date en tête modifiée ; les testeurs en seront
